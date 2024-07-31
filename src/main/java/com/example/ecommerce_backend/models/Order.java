@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
-
 @Entity
 @Table(name="\"order\"")
 @Data
@@ -18,6 +16,12 @@ public class Order {
     @Column(name="\"order_id\"")
     Integer id;
 
+    @Column(name="\"quantity\"")
+    int quantity;
+
+    @Column(name="\"paid\"")
+    boolean paid;
+
     @OneToOne
     @JoinColumn(name = "\"item_id\"")
     Item item;
@@ -28,8 +32,5 @@ public class Order {
 
 
 
-    int quantity;
-    Date orderDate = new Date();
-    boolean paid;
 }
 
