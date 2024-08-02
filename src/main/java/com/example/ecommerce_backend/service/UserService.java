@@ -12,38 +12,46 @@ import com.example.ecommerce_backend.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import java.util.HashSet;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE, makeFinal = true)
-public class UserService {
+public class UserService implements IUserService {
     UserRepository userRepository;
     RoleRepository roleRepository;
     UserMapper userMapper;
-    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
-    public UserResponse CreateUser(UserCreationRequest request) {
+    PasswordEncoder passwordEncoder;
+    @Override
+    public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new AppException("User already existed");
         }
         User user = userMapper.toUser(request);
+        String id = String.format("%s%s", user.getUsername(), user.getPhone());
+        user.setId(id);
+        System.out.println(user.getId());
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
         List<Role> roles = roleRepository.findAllById(request.getRoles());
         user.setRoles(new HashSet<>(roles));
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        String id = String.format("%s%s", user.getUsername(), user, user.getPhone());
-        user.setId(id);
-        return userMapper.toUserResponse(user);
+        for(Role r: roles){
+            System.out.println(r);
+        }
+
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId)
@@ -51,7 +59,7 @@ public class UserService {
 
         return updateUser(request, user);
     }
-
+    @Override
     public UserResponse updateUser(UserUpdateRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new AppException("User not existed"));
@@ -64,7 +72,7 @@ public class UserService {
             List<Role> roles = roleRepository.findAllById(request.getRoles());
             user.setRoles(new HashSet<>(roles));
         }
-//        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+
         if (request.getPassword() != null) {
             request.setPassword(passwordEncoder.encode(request.getPassword()));
         }
@@ -73,7 +81,7 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-
+    @Override
     @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse getUserById(String id) {
         User user = userRepository.findById(id)
@@ -82,7 +90,7 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
-
+    @Override
     public UserResponse getMyInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -92,6 +100,7 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getUsers() {
         return userRepository.findAll().stream()
@@ -99,6 +108,7 @@ public class UserService {
                 .toList();
     }
 
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(String id) {
         userRepository.deleteById(id);

@@ -4,7 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import jakarta.persistence.*;
 
-@Entity(name="\"permission\"")
+@Entity(name="permission")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,9 +12,9 @@ import jakarta.persistence.*;
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class Permission {
     @Id
-    @Column(name="\"premission_name\"")
+    @Column(name="permission_name")
     String name;
 
-    @Column(name="\"description\"")
+    @Column(name="description")
     String description;
 }

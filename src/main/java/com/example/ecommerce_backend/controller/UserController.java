@@ -5,22 +5,36 @@ import com.example.ecommerce_backend.dto.request.UserUpdateRequest;
 import com.example.ecommerce_backend.dto.response.ApiResponse;
 import com.example.ecommerce_backend.dto.response.UserResponse;
 import com.example.ecommerce_backend.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
-    UserService userService;
 
+    UserService userService;
+    @GetMapping("/getAllUser")
+    ApiResponse<List<UserResponse>> getAllUsers() {
+        System.out.println("Sos");
+        List<UserResponse> responses = userService.getUsers();
+        ApiResponse<List<UserResponse>> apiResponse = new ApiResponse<>();
+
+        apiResponse.setResult(responses);
+
+        return apiResponse;
+    }
     @PostMapping
     ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request)  {
-        UserResponse userResponse = userService.CreateUser(request);
+        System.out.println("Creating User");
+
+        UserResponse userResponse = userService.createUser(request);
         ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userResponse);
         return apiResponse;
@@ -28,6 +42,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     ApiResponse<UserResponse> updateUser(@PathVariable("id") String id, @RequestBody @Valid UserUpdateRequest request)  {
+
         UserResponse userResponse = userService.updateUser(id, request);
         ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userResponse);
@@ -35,6 +50,7 @@ public class UserController {
     }
     @PutMapping
     ApiResponse<UserResponse> updateUser( @RequestBody @Valid UserUpdateRequest request)  {
+        System.out.println("Update User");
         UserResponse userResponse = userService.updateUser(request);
         ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userResponse);
@@ -42,11 +58,13 @@ public class UserController {
     }
     @GetMapping("/{id}")
     ApiResponse<UserResponse> getUser(@PathVariable("id") String id)  {
+        System.out.println("Get User");
         UserResponse userResponse = userService.getUserById(id);
         ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userResponse);
         return apiResponse;
     }
+
 
     @GetMapping("/my-info")
     ApiResponse<UserResponse> getMyInfo (){

@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.util.Set;
-@Entity
-@Table(name="\"role\"")
+@Entity(name="role")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,10 +12,10 @@ import java.util.Set;
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class Role {
     @Id
-    @Column(name="\"role_name\"")
+    @Column(name="role_name")
     String name;
 
-    @Column(name="\"description\"")
+    @Column(name="description")
     String description;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
@@ -25,9 +24,9 @@ public class Role {
             CascadeType.DETACH,
             CascadeType.REFRESH
     })
-    @JoinTable(name = "\"role_permission\"",
-            joinColumns = @JoinColumn(name = "\"role_name\""),
-            inverseJoinColumns = @JoinColumn(name = "\"permission_name\"")
+    @JoinTable(name = "role_permission",
+            joinColumns = @JoinColumn(name = "role_name"),
+            inverseJoinColumns = @JoinColumn(name = "permission_name")
     )
     Set<Permission> permissions;
 }

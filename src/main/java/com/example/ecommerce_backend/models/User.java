@@ -6,29 +6,29 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Set;
-@Entity(name="\"user\"")
+@Entity(name="user")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class User {
     @Id
-    @Column(name="\"user_id\"")
+    @Column(name="user_id")
     String id;
 
-    @Column(name="\"username\"")
+    @Column(name="username")
     String username;
 
-    @Column(name="\"password\"")
+    @Column(name="password")
     String password;
 
-    @Column(name="\"email\"")
+    @Column(name="email")
     String email;
 
-    @Column(name="\"phone\"", length=10)
+    @Column(name="phone")
     String phone;
 
-    @Column(name="\"enabled\"")
+    @Column(name="enabled")
     boolean isEnable;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
@@ -38,9 +38,9 @@ public class User {
             CascadeType.REFRESH
     })
     @JoinTable(
-            name = "\"user_role\"",
-            joinColumns = @JoinColumn(name = "\"user_id\""),
-            inverseJoinColumns = @JoinColumn(name = "\"role_name\"")
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_name")
     )
     Set<Role> roles;
 }

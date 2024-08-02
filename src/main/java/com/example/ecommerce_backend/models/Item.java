@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Entity
-@Table(name="\"item\"")
+@Entity(name="item")
 @Data
 @Builder
 @AllArgsConstructor
@@ -13,24 +12,24 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Item {
     @Id
-    @Column(name="\"item_id\"")
-    Integer id;
+    @Column(name="item_id")
+    String id;
 
-    @Column(name="\"name\"")
+    @Column(name="name")
     String name;
 
-    @Column(name="\"decription\"")
+    @Column(name="decription")
     String description;
 
-    @Column(name="\"category\"")
+    @Column(name="category")
     String category;
 
-    @Column(name="\"enabled\"")
+    @Column(name="enabled")
     boolean isEnable;
 
-    @Column(name="\"price\"")
+    @Column(name="price")
     double price;
 
-    @Column(name="\"imageFile\"")
+    @Column(name="imageFile")
     String imageFile;
 }

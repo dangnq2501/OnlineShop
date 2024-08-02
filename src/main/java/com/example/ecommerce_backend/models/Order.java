@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Entity
-@Table(name="\"order\"")
+@Entity(name="\"order\"")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 public class Order {
     @Id
     @Column(name="\"order_id\"")
-    Integer id;
+    String id;
 
     @Column(name="\"quantity\"")
     int quantity;
